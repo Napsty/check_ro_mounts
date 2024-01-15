@@ -25,7 +25,9 @@
 
 use strict;
 use Getopt::Long;
-use lib "/usr/lib/nagios/plugins";
+use FindBin;
+use lib "$FindBin::Bin";
+use lib '@libexecdir@';
 use utils qw (%ERRORS &support);
 
 my $name = 'RO_MOUNTS';
