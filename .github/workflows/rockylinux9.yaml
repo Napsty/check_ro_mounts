@@ -15,6 +15,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: Enable EPEL
       run: |
+        dnf install dnf-plugins-core
         dnf config-manager --set-enabled crb
         dnf install epel-release
     - name: Install dependencies
@@ -31,6 +32,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: Enable EPEL
       run: |
+        dnf install dnf-plugins-core
         dnf config-manager --set-enabled crb
         dnf install epel-release
     - name: Install dependencies
