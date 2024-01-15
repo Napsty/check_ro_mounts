@@ -1,0 +1,33 @@
+# @file rockylinux9.yml
+---
+name: Tests on Rocky Linux
+
+# Trigger the workflow on push or pull request
+on: [push, pull_request]
+
+jobs:
+  help:
+    name: Launch plugin with --help
+    runs-on: ubuntu-latest
+    container: 
+      image: rockylinux/rockylinux:9
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install dependencies
+      run: |
+        dnf -y install perl-FindBin
+    - name: Launch plugin with --help
+      run: |
+        ./check_ro_mounts.pl --help
+  execute:
+    runs-on: ubuntu-latest
+    container: 
+      image: rockylinux/rockylinux:9
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install dependencies
+      run: |
+        dnf -y install perl-FindBin
+    - name: Launch plugin
+      run: |
+        ./check_ro_mounts.pl -d
