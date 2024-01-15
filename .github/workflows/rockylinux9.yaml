@@ -1,6 +1,6 @@
 # @file rockylinux9.yml
 ---
-name: Tests on Rocky Linux
+name: Tests on Rocky Linux 9
 
 # Trigger the workflow on push or pull request
 on: [push, pull_request]
@@ -21,9 +21,12 @@ jobs:
     - name: Install dependencies
       run: |
         dnf -y install nagios-plugins-perl perl-FindBin perl-lib
+    - name: Move Plugin to nagios-plugins dir
+      run: |
+        mv check_ro_mounts.pl /usr/lib64/nagios/plugins/
     - name: Launch plugin with --help
       run: |
-        ./check_ro_mounts.pl --help
+        /usr/lib64/nagios/plugins/check_ro_mounts.pl --help
   execute:
     runs-on: ubuntu-latest
     container: 
@@ -38,6 +41,9 @@ jobs:
     - name: Install dependencies
       run: |
         dnf -y install nagios-plugins-perl perl-FindBin perl-lib
+    - name: Move Plugin to nagios-plugins dir
+      run: |
+        mv check_ro_mounts.pl /usr/lib64/nagios/plugins/
     - name: Launch plugin
       run: |
-        ./check_ro_mounts.pl -d
+        /usr/lib64/nagios/plugins/check_ro_mounts.pl -d
