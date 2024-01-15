@@ -20,7 +20,7 @@ jobs:
         dnf install -y epel-release
     - name: Install dependencies
       run: |
-        dnf -y install nagios-plugins-perl perl-FindBin
+        dnf -y install nagios-plugins-perl perl-FindBin perl-lib
     - name: Launch plugin with --help
       run: |
         ./check_ro_mounts.pl --help
@@ -37,7 +37,7 @@ jobs:
         dnf install -y epel-release
     - name: Install dependencies
       run: |
-        dnf -y install nagios-plugins-perl perl-FindBin
+        dnf -y install nagios-plugins-perl perl-FindBin perl-lib
     - name: Launch plugin
       run: |
         ./check_ro_mounts.pl -d
