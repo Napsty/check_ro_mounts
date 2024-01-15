@@ -15,7 +15,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: Install dependencies
       run: |
-        dnf -y install perl-FindBin
+        dnf -y install nagios-plugins-perl perl-FindBin
     - name: Launch plugin with --help
       run: |
         ./check_ro_mounts.pl --help
@@ -27,7 +27,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: Install dependencies
       run: |
-        dnf -y install perl-FindBin
+        dnf -y install nagios-plugins-perl perl-FindBin
     - name: Launch plugin
       run: |
         ./check_ro_mounts.pl -d
