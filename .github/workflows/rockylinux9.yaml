@@ -13,6 +13,10 @@ jobs:
       image: rockylinux/rockylinux:9
     steps:
     - uses: actions/checkout@v1
+    - name: Enable EPEL
+      run: |
+        dnf config-manager --set-enabled crb
+        dnf install epel-release
     - name: Install dependencies
       run: |
         dnf -y install nagios-plugins-perl perl-FindBin
@@ -25,6 +29,10 @@ jobs:
       image: rockylinux/rockylinux:9
     steps:
     - uses: actions/checkout@v1
+    - name: Enable EPEL
+      run: |
+        dnf config-manager --set-enabled crb
+        dnf install epel-release
     - name: Install dependencies
       run: |
         dnf -y install nagios-plugins-perl perl-FindBin
