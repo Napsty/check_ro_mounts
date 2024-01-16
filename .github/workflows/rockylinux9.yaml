@@ -6,8 +6,7 @@ name: Tests on Rocky Linux 9
 on: [push, pull_request]
 
 jobs:
-  help:
-    name: Launch plugin with --help
+  launch-help:
     runs-on: ubuntu-latest
     container: 
       image: rockylinux/rockylinux:9
@@ -27,7 +26,8 @@ jobs:
     - name: Launch plugin with --help
       run: |
         /usr/lib64/nagios/plugins/check_ro_mounts.pl --help
-  tests:
+  launch-checks:
+    needs: launch-help
     runs-on: ubuntu-latest
     container: 
       image: rockylinux/rockylinux:9
@@ -53,4 +53,4 @@ jobs:
         /usr/lib64/nagios/plugins/check_ro_mounts.pl -T overlay
     - name: Execute with excluded file systems (should not detect any read-only mounts)
       run: |
-        /usr/lib64/nagios/plugins/check_ro_mounts.pl -X tmpfs -X proc -X devpts -X sysfs -X cgroup -X cgroup2 -x "/dev/root /__e"
+        /usr/lib64/nagios/plugins/check_ro_mounts.pl -X tmpfs -X proc -X devpts -X sysfs -X cgroup -X cgroup2 -x "/__e"
