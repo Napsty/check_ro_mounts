@@ -12,10 +12,10 @@ jobs:
     - uses: actions/checkout@v1
     - name: Install dependencies
       run: |
-        apt-get install -yy libmonitoring-plugin-perl
+        sudo apt-get install -yy libmonitoring-plugin-perl
     - name: Move Plugin to nagios-plugins dir
       run: |
-        mv check_ro_mounts.pl /usr/lib/nagios/plugins/
+        sudo mv check_ro_mounts.pl /usr/lib/nagios/plugins/
     - name: Launch plugin with --help
       run: |
         /usr/lib/nagios/plugins/check_ro_mounts.pl --help
@@ -26,10 +26,10 @@ jobs:
     - uses: actions/checkout@v1
     - name: Install dependencies
       run: |
-        apt-get install -yy libmonitoring-plugin-perl
+        sudo apt-get install -yy libmonitoring-plugin-perl
     - name: Move Plugin to nagios-plugins dir
       run: |
-        mv check_ro_mounts.pl /usr/lib/nagios/plugins/
+        sudo mv check_ro_mounts.pl /usr/lib/nagios/plugins/
     - name: Execute in debug mode (should detect read-only mounts)
       run: |
         /usr/lib/nagios/plugins/check_ro_mounts.pl -d
