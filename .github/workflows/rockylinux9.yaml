@@ -12,7 +12,7 @@ jobs:
       image: rockylinux/rockylinux:9
     steps:
     - uses: actions/checkout@v1
-    - name: Enable EPEL
+    - name: Are we really on Rocky Linux?
       run: |
         cat /etc/os-release
   launch-help:
