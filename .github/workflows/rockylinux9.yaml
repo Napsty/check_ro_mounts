@@ -6,15 +6,6 @@ name: Tests on Rocky Linux 9
 on: [push, pull_request]
 
 jobs:
-  distribution-check:
-    runs-on: ubuntu-latest
-    container:
-      image: rockylinux/rockylinux:9
-    steps:
-    - uses: actions/checkout@v1
-    - name: Are we really on Rocky Linux?
-      run: |
-        cat /etc/os-release
   launch-help:
     runs-on: ubuntu-latest
     container: 
@@ -63,3 +54,7 @@ jobs:
     - name: Execute with excluded file systems and mount paths (should not detect any read-only mounts)
       run: |
         /usr/lib64/nagios/plugins/check_ro_mounts.pl -X tmpfs -X proc -X devpts -X sysfs -X cgroup -X cgroup2 -x "/__e"
+    - name: Execute with file systems in fstab file (should not detect any read-only mounts)
+      run: |
+        for mount in $(egrep "(ext3|ext4|xfs) rw" /proc/mounts); do echo "$mount" >> /etc/fstab; done
+        /usr/lib64/nagios/plugins/check_ro_mounts.pl -F
