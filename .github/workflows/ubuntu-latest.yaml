@@ -1,0 +1,50 @@
+# @file ubuntu-latest.yml
+---
+name: Tests on latest Ubuntu LTS
+
+# Trigger the workflow on push or pull request
+on: [push, pull_request]
+
+jobs:
+  launch-help:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install dependencies
+      run: |
+        apt-get install -yy libmonitoring-plugin-perl
+    - name: Move Plugin to nagios-plugins dir
+      run: |
+        mv check_ro_mounts.pl /usr/lib/nagios/plugins/
+    - name: Launch plugin with --help
+      run: |
+        /usr/lib/nagios/plugins/check_ro_mounts.pl --help
+  launch-checks:
+    needs: launch-help
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install dependencies
+      run: |
+        apt-get install -yy libmonitoring-plugin-perl
+    - name: Move Plugin to nagios-plugins dir
+      run: |
+        mv check_ro_mounts.pl /usr/lib/nagios/plugins/
+    - name: Execute in debug mode (should detect read-only mounts)
+      run: |
+        /usr/lib/nagios/plugins/check_ro_mounts.pl -d
+      continue-on-error: true
+    - name: Execute with include overlay file system (should not detect any read-only mounts)
+      run: |
+        /usr/lib/nagios/plugins/check_ro_mounts.pl -T overlay
+    - name: Execute with excluded file systems and mount paths (should not detect any read-only mounts)
+      run: |
+        /usr/lib/nagios/plugins/check_ro_mounts.pl -X tmpfs -X proc -X devpts -X sysfs -X cgroup -X cgroup2 -x "/__e"
+    - name: Execute with file systems in missing fstab file (should alert for missing /etc/fstab)
+      run: |
+        /usr/lib/nagios/plugins/check_ro_mounts.pl -F
+      continue-on-error: true
+    - name: Execute with file systems in fstab file (should not detect any read-only mounts)
+      run: |
+        for mount in $(egrep "(ext3|ext4|xfs) rw" /proc/mounts); do echo "$mount" >> /etc/fstab; done
+        /usr/lib/nagios/plugins/check_ro_mounts.pl -F
