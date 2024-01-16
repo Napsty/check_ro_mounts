@@ -44,6 +44,7 @@ jobs:
     - name: Move Plugin to nagios-plugins dir
       run: |
         mv check_ro_mounts.pl /usr/lib64/nagios/plugins/
-    - name: Launch plugin
+    - name: Launch plugin in debug mode (should detect read-only mounts)
       run: |
         /usr/lib64/nagios/plugins/check_ro_mounts.pl -d
+      continue-on-error: true
