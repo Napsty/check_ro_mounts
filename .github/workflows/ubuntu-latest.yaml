@@ -1,0 +1,50 @@
+# @file ubuntu-latest.yml
+---
+name: Tests on latest Ubuntu LTS
+
+# Trigger the workflow on push or pull request
+on: [push, pull_request]
+
+jobs:
+  launch-help:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install dependencies
+      run: |
+        sudo apt-get install -yy libmonitoring-plugin-perl monitoring-plugins-common
+    - name: Move Plugin to nagios-plugins dir
+      run: |
+        sudo mv check_ro_mounts.pl /usr/lib/nagios/plugins/
+    - name: Launch plugin with --help
+      run: |
+        /usr/lib/nagios/plugins/check_ro_mounts.pl --help
+  launch-checks:
+    needs: launch-help
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install dependencies
+      run: |
+        sudo apt-get install -yy libmonitoring-plugin-perl monitoring-plugins-common
+    - name: Move Plugin to nagios-plugins dir
+      run: |
+        sudo mv check_ro_mounts.pl /usr/lib/nagios/plugins/
+    - name: Execute in debug mode (should detect read-only mounts)
+      run: |
+        /usr/lib/nagios/plugins/check_ro_mounts.pl -d
+      continue-on-error: true
+    - name: Execute with specific file system ext4 (should not detect any read-only mounts)
+      run: |
+        /usr/lib/nagios/plugins/check_ro_mounts.pl -T ext4
+    - name: Execute with excluded file systems and mount paths (should not detect any read-only mounts)
+      run: |
+        /usr/lib/nagios/plugins/check_ro_mounts.pl -X securityfs -X pstore -X autofs -X bpf -X mqueue -X debugfs -X tracefs -X fusectl -X configfs -X ramfs -X squashfs -X tmpfs -X proc -X devpts -X sysfs -X cgroup -X cgroup2
+    - name: Execute with file systems in missing fstab file (should alert for missing /etc/fstab)
+      run: |
+        /usr/lib/nagios/plugins/check_ro_mounts.pl -F -f ./fstab
+      continue-on-error: true
+    - name: Execute with file systems in fstab file (should not detect any read-only mounts)
+      run: |
+        for mount in $(egrep "(ext3|ext4|xfs) rw" /proc/mounts); do sudo echo "$mount" >> ./fstab; done
+        /usr/lib/nagios/plugins/check_ro_mounts.pl -F -f ./fstab

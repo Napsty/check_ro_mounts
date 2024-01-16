@@ -1,0 +1,64 @@
+# @file rockylinux9.yml
+---
+name: Tests on Rocky Linux 9
+
+# Trigger the workflow on push or pull request
+on: [push, pull_request]
+
+jobs:
+  launch-help:
+    runs-on: ubuntu-latest
+    container: 
+      image: rockylinux/rockylinux:9
+    steps:
+    - uses: actions/checkout@v1
+    - name: Enable EPEL
+      run: |
+        dnf install -y dnf-plugins-core
+        dnf config-manager --set-enabled crb
+        dnf install -y epel-release
+    - name: Install dependencies
+      run: |
+        dnf -y install nagios-plugins-perl perl-FindBin perl-lib
+    - name: Move Plugin to nagios-plugins dir
+      run: |
+        mv check_ro_mounts.pl /usr/lib64/nagios/plugins/
+    - name: Launch plugin with --help
+      run: |
+        /usr/lib64/nagios/plugins/check_ro_mounts.pl --help
+  launch-checks:
+    needs: launch-help
+    runs-on: ubuntu-latest
+    container: 
+      image: rockylinux/rockylinux:9
+    steps:
+    - uses: actions/checkout@v1
+    - name: Enable EPEL
+      run: |
+        dnf install -y dnf-plugins-core
+        dnf config-manager --set-enabled crb
+        dnf install -y epel-release
+    - name: Install dependencies
+      run: |
+        dnf -y install nagios-plugins-perl perl-FindBin perl-lib
+    - name: Move Plugin to nagios-plugins dir
+      run: |
+        mv check_ro_mounts.pl /usr/lib64/nagios/plugins/
+    - name: Execute in debug mode (should detect read-only mounts)
+      run: |
+        /usr/lib64/nagios/plugins/check_ro_mounts.pl -d
+      continue-on-error: true
+    - name: Execute with include overlay file system (should not detect any read-only mounts)
+      run: |
+        /usr/lib64/nagios/plugins/check_ro_mounts.pl -T overlay
+    - name: Execute with excluded file systems and mount paths (should not detect any read-only mounts)
+      run: |
+        /usr/lib64/nagios/plugins/check_ro_mounts.pl -X tmpfs -X proc -X devpts -X sysfs -X cgroup -X cgroup2 -x "/__e"
+    - name: Execute with file systems in missing fstab file (should alert for missing /etc/fstab)
+      run: |
+        /usr/lib64/nagios/plugins/check_ro_mounts.pl -F
+      continue-on-error: true
+    - name: Execute with file systems in fstab file (should not detect any read-only mounts)
+      run: |
+        for mount in $(egrep "(ext3|ext4|xfs) rw" /proc/mounts); do echo "$mount" >> /etc/fstab; done
+        /usr/lib64/nagios/plugins/check_ro_mounts.pl -F
