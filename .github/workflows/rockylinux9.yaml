@@ -51,3 +51,6 @@ jobs:
     - name: Execute with include overlay file system (should not detect any read-only mounts)
       run: |
         /usr/lib64/nagios/plugins/check_ro_mounts.pl -T overlay
+    - name: Execute with excluded file systems (should not detect any read-only mounts)
+      run: |
+        /usr/lib64/nagios/plugins/check_ro_mounts.pl -X tmpfs -X proc -X devpts -X sysfs -X cgroup -X cgroup2 -x "/dev/root /__e"
