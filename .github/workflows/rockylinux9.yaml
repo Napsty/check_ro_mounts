@@ -27,7 +27,7 @@ jobs:
     - name: Launch plugin with --help
       run: |
         /usr/lib64/nagios/plugins/check_ro_mounts.pl --help
-  execute:
+  tests:
     runs-on: ubuntu-latest
     container: 
       image: rockylinux/rockylinux:9
@@ -44,7 +44,10 @@ jobs:
     - name: Move Plugin to nagios-plugins dir
       run: |
         mv check_ro_mounts.pl /usr/lib64/nagios/plugins/
-    - name: Launch plugin in debug mode (should detect read-only mounts)
+    - name: Execute in debug mode (should detect read-only mounts)
       run: |
         /usr/lib64/nagios/plugins/check_ro_mounts.pl -d
       continue-on-error: true
+    - name: Execute with include overlay file system (should not detect any read-only mounts)
+      run: |
+        /usr/lib64/nagios/plugins/check_ro_mounts.pl -T overlay
