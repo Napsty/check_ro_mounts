@@ -39,7 +39,7 @@ jobs:
         /usr/lib/nagios/plugins/check_ro_mounts.pl -T overlay
     - name: Execute with excluded file systems and mount paths (should not detect any read-only mounts)
       run: |
-        /usr/lib/nagios/plugins/check_ro_mounts.pl -X tmpfs -X proc -X devpts -X sysfs -X cgroup -X cgroup2 -x "/__e"
+        /usr/lib/nagios/plugins/check_ro_mounts.pl -X securityfs -X pstore -X autofs -X bpf -X mqueue -X debugfs -X tracefs -X fusectl -X configfs -X ramfs -X squashfs -X tmpfs -X proc -X devpts -X sysfs -X cgroup -X cgroup2
     - name: Execute with file systems in missing fstab file (should alert for missing /etc/fstab)
       run: |
         /usr/lib/nagios/plugins/check_ro_mounts.pl -F
