@@ -47,4 +47,5 @@ jobs:
     - name: Execute with file systems in fstab file (should not detect any read-only mounts)
       run: |
         for mount in $(egrep "(ext3|ext4|xfs) rw" /proc/mounts); do sudo echo "$mount" >> /etc/fstab; done
+        sudo chmod 644 /etc/fstab
         /usr/lib/nagios/plugins/check_ro_mounts.pl -F
