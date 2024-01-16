@@ -42,7 +42,7 @@ jobs:
         /usr/lib/nagios/plugins/check_ro_mounts.pl -X securityfs -X pstore -X autofs -X bpf -X mqueue -X debugfs -X tracefs -X fusectl -X configfs -X ramfs -X squashfs -X tmpfs -X proc -X devpts -X sysfs -X cgroup -X cgroup2
     - name: Execute with file systems in missing fstab file (should alert for missing /etc/fstab)
       run: |
-        /usr/lib/nagios/plugins/check_ro_mounts.pl -F
+        /usr/lib/nagios/plugins/check_ro_mounts.pl -F -f ./fstab
       continue-on-error: true
     - name: Execute with file systems in fstab file (should not detect any read-only mounts)
       run: |
