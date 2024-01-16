@@ -34,9 +34,9 @@ jobs:
       run: |
         /usr/lib/nagios/plugins/check_ro_mounts.pl -d
       continue-on-error: true
-    - name: Execute with include overlay file system (should not detect any read-only mounts)
+    - name: Execute with specific file system ext4 (should not detect any read-only mounts)
       run: |
-        /usr/lib/nagios/plugins/check_ro_mounts.pl -T overlay
+        /usr/lib/nagios/plugins/check_ro_mounts.pl -T ext4
     - name: Execute with excluded file systems and mount paths (should not detect any read-only mounts)
       run: |
         /usr/lib/nagios/plugins/check_ro_mounts.pl -X securityfs -X pstore -X autofs -X bpf -X mqueue -X debugfs -X tracefs -X fusectl -X configfs -X ramfs -X squashfs -X tmpfs -X proc -X devpts -X sysfs -X cgroup -X cgroup2
