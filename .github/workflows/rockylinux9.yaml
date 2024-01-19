@@ -12,20 +12,12 @@ jobs:
       image: rockylinux/rockylinux:9
     steps:
     - uses: actions/checkout@v1
-    - name: Enable EPEL
-      run: |
-        dnf install -y dnf-plugins-core
-        dnf config-manager --set-enabled crb
-        dnf install -y epel-release
     - name: Install dependencies
       run: |
-        dnf -y install nagios-plugins-perl perl-FindBin perl-lib
-    - name: Move Plugin to nagios-plugins dir
-      run: |
-        mv check_ro_mounts.pl /usr/lib64/nagios/plugins/
+        dnf -y install perl perl-lib
     - name: Launch plugin with --help
       run: |
-        /usr/lib64/nagios/plugins/check_ro_mounts.pl --help
+        ./check_ro_mounts.pl --help
   launch-checks:
     needs: launch-help
     runs-on: ubuntu-latest
