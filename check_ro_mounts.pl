@@ -25,10 +25,6 @@
 
 use strict;
 use Getopt::Long;
-use FindBin;
-use lib "$FindBin::Bin";
-use lib '@libexecdir@';
-use utils qw (%ERRORS &support);
 
 my $name = 'RO_MOUNTS';
 my $mtab = '/proc/mounts';
@@ -42,6 +38,7 @@ my @excluded_types = ();
 my @ro_mounts = ();
 my $want_help = 0;
 my $debug = 0;
+my %ERRORS=('OK'=>0,'WARNING'=>1,'CRITICAL'=>2,'UNKNOWN'=>3,'DEPENDENT'=>4);
 
 Getopt::Long::Configure(qw(no_ignore_case));
 my $res = GetOptions(
@@ -186,8 +183,6 @@ Options:
     Specify a different path for fstab (default is /etc/fstab)
 
 EOH
-
-    support();
 }
 
 # vim:sw=4:ts=4:et
