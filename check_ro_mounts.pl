@@ -3,6 +3,7 @@
 # check_ro_mounts.pl
 # Copyright (c) 2008 Valentin Vidic <vvidic@carnet.hr>
 # Copyright (c) 2024 Claudio Kuenzler <ck@claudiokuenzler.com>
+# Copyright (c) 2025 @Eurylae
 #
 # Checks the mount table for read-only mounts; these are usually a sign of
 # trouble (broken filesystem after a crash, etc.)
@@ -153,9 +154,10 @@ sub nagios_exit {
 
 sub print_help {
     print <<EOH;
-check_ro_mounts 0.2
+check_ro_mounts 0.3
 Copyright (c) 2008 Valentin Vidic <vvidic\@carnet.hr>
 Copyright (c) 2024 Claudio Kuenzler <ck\@claudiokuenzler.com>
+Copyright (c) 2025 \@Eurylae 
 
 This plugin checks the mount table for read-only mounts.
 
