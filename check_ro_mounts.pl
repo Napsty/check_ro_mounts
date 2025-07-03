@@ -70,6 +70,7 @@ if ($fstab_check) {
   FSENTRY: while (<FSTAB>) {
     # parse fstab lines
     next FSENTRY if /^(#|\s)/; # skip commented or empty lines
+    next FSENTRY if /,ro,/; # skip mounts which are designed to be read only
     my ($dev, $mp, $type, $opt, $dump, $pass) = split;
     next FSENTRY if $mp eq 'none'; # Skip entries with none mount point (e.g. swap)
     push @fstab_mp, $mp;
@@ -172,7 +173,7 @@ Options:
  -p, --path=PATH, --partition=PARTITION
     Glob pattern of path or partition to check (may be repeated)
  -x, --exclude=PATH <STRING>
-    Glob pattern of path or partition to ignore (only works if -p unspecified)
+    Glob pattern of path or partition to ignore (only works if -p specified)
  -X, --exclude-type=TYPE <STRING>
     Ignore all filesystems of indicated type (may be repeated)
  -T, --include-type=TYPE <STRING>
